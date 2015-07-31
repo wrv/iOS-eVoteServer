@@ -1,6 +1,8 @@
 package com.buap.eVoteServer;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -123,12 +125,14 @@ public class AuthenticationServer {
 			String signedBMessage = (String) ballotContents.get("signedBMessage");
 			
 			//From some database, retrieve the users actual public key
-			String voterPublicKey = ""; //something with voterID
+			String voterPublicKey = retrieveVoterPK(voterID); //something with voterID
 			
-			boolean validVote = curBOps.verifyPairing(signedBMessage, voterPublicKey, blindedMessage);
-			
-			if(validVote){
-				return curBOps.signMessage(blindedMessage);
+			if(!voterPublicKey.equals("dne")){
+				boolean validVote = curBOps.verifyPairing(signedBMessage, voterPublicKey, blindedMessage);
+				
+				if(validVote){
+					return curBOps.signMessage(blindedMessage);
+				}
 			}
 			return "Invalid Authentication";
 		} catch(ParseException pe) {
@@ -137,5 +141,22 @@ public class AuthenticationServer {
 		}
 	}
 
-
+	private String retrieveVoterPK(String voterID){
+		JSONParser parser = new JSONParser();
+		try{
+			JSONObject voters = (JSONObject) parser.parse(new FileReader("C:\\db.json"));
+			JSONObject curVoter = (JSONObject) voters.get(voterID);
+			return (String) curVoter.get("pk");
+			
+		} catch(ParseException pe){
+			System.out.println("Parse Exception at: " + pe.getPosition());
+			return "dne";
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return "dne";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "dne";
+		}
+	}
 }

@@ -2,6 +2,8 @@ package com.buap.eVoteServer;
 
 import java.io.IOException;
 
+//import mcl.bn254.*;
+
 public class RunServers {
 
 	public static void main(String[] args) {
@@ -11,8 +13,15 @@ public class RunServers {
 		String ECval3 = "13891744915211034074451795021214165905772212241412891944830863846330766296736";
 		String ECval4 = "7937318970632701341203597196594272556916396164729705624521405069090520231616";
 		BilinearOperations bops = new BilinearOperations(ECval1, ECval2, ECval3, ECval4, true);
-		
-		// begin the servers
+//		Ec2 genKey = bops.Q;
+//		genKey.mul(new Mpz(bops.randNum()));
+//		
+//		System.out.println(genKey);
+//		
+//		Ec2 testKey = new Ec2();
+//		testKey.set(genKey.toString());
+//		// begin the servers
+//		System.out.println(testKey);
 		
 		VotingServer vs;
 		AuthenticationServer as;
